@@ -1,4 +1,4 @@
-import requests, pickle, os
+import requests, pickle, os, json
 
 def get(url):
   baseUrl = "https://api.cognitedata.com/api/0.6/projects/%s" % os.getenv('COGNITE_PROJECT')
@@ -29,9 +29,11 @@ def get(url):
 def get_nodes(model_id, revision_id, node_count_cap = None):
   print('Getting nodes from 3D api')
   nodes = []
-  nameIdMap = {}
+  name_id_map = {}
   done = False
   cursor = None
+
+  duplicate_node_names = {}
 
   while not done:
     url = '/3d/models/%s/revisions/%s/nodes?limit=1000' % (model_id, revision_id)
@@ -44,11 +46,21 @@ def get_nodes(model_id, revision_id, node_count_cap = None):
       data = response['data']
       cursor = data['nextCursor'] if 'nextCursor' in data.keys() else None
       for node in data['items']:
+        name = node['name']
         nodes.append(node)
-        nameIdMap[node['name']] = node['id']
+        if name in name_id_map:
+          # Report duplicates and count
+          if not name in duplicate_node_names:
+            duplicate_node_names[name] = {'ids': [name_id_map[name]], 'count': 0}
+          duplicate_node_names[name]['count'] += 1
+          duplicate_node_names[name]['ids'].append(node['id'])
+        name_id_map[name] = node['id']
     done = cursor==None
     
     print(' Downloading nodes: ', len(nodes))
     if node_count_cap and len(nodes) > node_count_cap:
       break
-  return nameIdMap
+  print('Found ', len(duplicate_node_names.keys()), ' duplicate node names in 3D model.')
+  with open('duplicate_node_names.json', 'w') as o:
+    json.dump(duplicate_node_names, o)
+  return name_id_map
