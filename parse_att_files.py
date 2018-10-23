@@ -47,6 +47,16 @@ revision_id = 6123089088695666
 node_id_map = get_node_id_map(model_id, revision_id)
 pdms_id_map = get_pdms_id_map()
 
+# for name in node_id_map.keys():
+#   value = node_id_map[name]
+#   del node_id_map[name]
+#   node_id_map[name.upper()] = value
+
+# for name in pdms_id_map.keys():
+#   value = pdms_id_map[name]
+#   del pdms_id_map[name]
+#   pdms_id_map[name.upper()] = value
+
 # Loop through and find matches where name is identical in the two maps
 node_id_pdms_id_map = {}
 pdms_id_node_id_map = {}
@@ -67,8 +77,20 @@ output = {
   'missing_pdms_ids': missing_pdms_ids,
 }
 
+
+
 print('Found ', len(node_id_pdms_id_map.keys()), ' matches and ', len(missing_pdms_ids), ' missing pdms ids.')
-print('Dumping json to ', args.outputfile)
+print('Dumping matches to ', args.outputfile)
 # Dump to json
 with open(args.outputfile, 'w') as o:
   json.dump(output, o)
+
+# Dump node_id_map to json
+print('Dumping node_id_map to node_id_map.json')
+with open('node_id_map.json', 'w') as o:
+  json.dump(node_id_map, o)
+
+# Dump pdms_id_map to json
+print('Dumping pdms_id_map to pdms_id_map.json')
+with open('pdms_id_map.json', 'w') as o:
+  json.dump(pdms_id_map, o)
