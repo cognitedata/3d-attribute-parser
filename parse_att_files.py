@@ -40,9 +40,9 @@ def get_pdms_id_map():
       print('Loaded pdms id map from pdms_id_map.bin')
       return pdms_id_map
 
-# Gjøa
-model_id = 8636868704180663
-revision_id = 6123089088695666
+# 3ddemo
+model_id = 3894221335236914
+revision_id = 7395219163381819
 
 node_id_map = get_node_id_map(model_id, revision_id)
 pdms_id_map = get_pdms_id_map()

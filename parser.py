@@ -68,7 +68,7 @@ class ATTParser():
         if split_pos != -1:
           key = part[0:split_pos].strip()
           value = part[split_pos+len(self.tokens['name_end']):].strip()
-          if key == 'REF':
+          if key == ':MIMIRID':
             # Found PDMS-id
             if self.stack[-1] in self.map:
               print('Error, key ', self.stack[-1], ' with PDMS id already exists...')
